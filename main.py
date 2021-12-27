@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((SCREEN_X_SIZE, SCREEN_Y_SIZE))
 clock = pygame.time.Clock()
 
 background = pygame.transform.scale2x(pygame.image.load('res/background-night.png'))
-floor = pygame.transform.scale2x(pygame.image.load('res/floor.png'))
+floor = pygame.transform.scale2x(pygame.image.load('res/road.png'))
 floor_x = 0
 
 while True:

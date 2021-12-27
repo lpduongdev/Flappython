@@ -19,7 +19,7 @@ GAME_SPEED = 120
 # DIR
 FONT_LOCATION = '04B_19.ttf'
 BG_LOCATION = 'res/background-night.png'
-FLOOR_LOCATION = 'res/floor.png'
+ROAD_LOCATION = 'res/road.png'
 BIRD_DOWN_LOCATION = 'res/yellowbird-downflap.png'
 BIRD_MID_LOCATION = 'res/yellowbird-midflap.png'
 BIRD_UP_LOCATION = 'res/yellowbird-upflap.png'
@@ -30,9 +30,9 @@ SFX_HIT_LOCATION = 'sound/sfx_hit.wav'
 SFX_PASS_LOCATION = 'sound/sfx_point.wav'
 
 
-def draw_floor():
-    screen.blit(floor, (floor_x_pos, 650))
-    screen.blit(floor, (floor_x_pos + 432, 650))
+def generate_road():
+    screen.blit(road, (road_x_pos, 650))
+    screen.blit(road, (road_x_pos + 432, 650))
 
 
 def create_pipe():
@@ -123,12 +123,12 @@ high_score = 0
 
 # chèn background
 bg = pygame.image.load(BG_LOCATION).convert()
-bg = pygame.transform.scale2x(bg)
+# bg = pygame.transform.scale2x(bg)
 
 # chèn sàn
-floor = pygame.image.load(FLOOR_LOCATION).convert()
-floor = pygame.transform.scale2x(floor)
-floor_x_pos = 0
+road = pygame.image.load(ROAD_LOCATION).convert()
+# floor = pygame.transform.scale2x(floor)
+road_x_pos = 0
 
 # tạo chim
 bird_down = pygame.transform.scale2x(pygame.image.load(BIRD_DOWN_LOCATION).convert_alpha())
@@ -209,10 +209,10 @@ while True:
         high_score = update_score(score, high_score)
         score_display('game_over')
     # sàn
-    floor_x_pos -= 1
-    draw_floor()
-    if floor_x_pos <= -432:
-        floor_x_pos = 0
+    road_x_pos -= 1
+    generate_road()
+    if road_x_pos <= -432:
+        road_x_pos = 0
 
     pygame.display.update()
     clock.tick(GAME_SPEED)
