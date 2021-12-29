@@ -15,7 +15,7 @@ def hide_password_text(password):
 
 
 def show_register():
-    global color_username, color_password, username, username_active, password, password_active, password_confirm, password_confirm_active, click, btn_click
+    global color_username, color_password, color_password_confirm, username, username_active, password, password_active, password_confirm, password_confirm_active, click, btn_click
     username = ''
     password = ''
     password_confirm = ''
@@ -40,12 +40,51 @@ def show_register():
                         password = password[:-1]
                     if (97 <= event.key <= 122 or 48 <= event.key <= 57) and len(password) < 10:
                         password += event.unicode
+                if password_confirm_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        password_confirm = password_confirm[:-1]
+                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and len(password_confirm) < 10:
+                        password_confirm += event.unicode
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
                     btn_click = True
+        if username_input_rect.collidepoint((mx, my)):
+            if click:
+                username_active = True
+                password_active = False
+                password_confirm_active = False
+        if password_input_rect.collidepoint((mx, my)):
+            if click:
+                username_active = False
+                password_active = True
+                password_confirm_active = False
+        if password_confirm_input_rect.collidepoint((mx, my)):
+            if click:
+                username_active = False
+                password_active = False
+                password_confirm_active = True
+        click = False
+        if username_active:
+            color_username = color_active
+            color_password = color_passive
+            color_password_confirm = color_passive
+
+        if password_active:
+            color_password = color_active
+            color_username = color_passive
+            color_password_confirm = color_passive
+
+        if password_confirm_active:
+            color_username = color_passive
+            color_password = color_passive
+            color_password_confirm = color_active
+
         pygame.draw.rect(screen, color_username, username_input_rect, 3)
 
+        game_title = pygame.font.Font('04B_19.TTF', 60).render("Flappython", True, (255, 255, 255))
+        game_title_react = game_title.get_rect(center=(225, 75))
+        screen.blit(game_title, game_title_react)
 
         username_title = game_font.render("Account:", True, (255, 255, 255))
         username_title_rect = username_title.get_rect(center=(100, 200))
@@ -57,25 +96,36 @@ def show_register():
         password_title_rect = password_title.get_rect(center=(115, 320))
         screen.blit(password_title, password_title_rect)
 
-        pygame.draw.rect(screen, color_password, password_input_rect, 3)
+        pygame.draw.rect(screen, color_password_confirm, password_confirm_input_rect, 3)
 
-        password_confirm_title = game_font.render("Confirm password:", True, (255, 255, 255))
-        password_confirm_title_rect = password_confirm_title.get_rect(center=(190, 420))
+        password_confirm_title = game_font.render("Password:", True, (255, 255, 255))
+        password_confirm_title_rect = password_confirm_title.get_rect(center=(115, 440))
         screen.blit(password_confirm_title, password_confirm_title_rect)
 
-        account_surface = game_font.render(username, True, (255, 255, 255))
-        screen.blit(account_surface, (80, 340))
+        username_surface = game_font.render(username, True, (255, 255, 255))
+        screen.blit(username_surface, (80, 240))
 
         password_surface = game_font.render(hide_password_text(password), True, (255, 255, 255))
-        screen.blit(password_surface, (80, 460))
+        screen.blit(password_surface, (80, 360))
 
-        btn_reg_rect = pygame.Rect(115, 520, 200, 80)
-        btn_login_rect = pygame.Rect(115, 620, 200, 80)
-        screen.blit(reg_btn, (115, 520))
-        screen.blit(login_btn, (115, 620))
+        password_confirm_surface = game_font.render(hide_password_text(password_confirm), True, (255, 255, 255))
+        screen.blit(password_confirm_surface, (80, 490))
+
+        btn_reg_rect = pygame.Rect(115, 580, 200, 80)
+        screen.blit(reg_btn, (115, 580))
+
+        if btn_reg_rect.collidepoint((mx, my)):
+            if btn_click:
+                handle_register()
+        btn_click = False
 
         pygame.display.update()
         clock.tick(120)
+
+
+def handle_register():
+    # TODO
+    return None
 
 
 def handle_login():
@@ -172,6 +222,7 @@ color_active = pygame.Color('lightskyblue3')
 color_passive = pygame.Color('black')
 color_username = color_passive
 color_password = color_passive
+color_password_confirm = color_passive
 
 username_active = True
 password_active = False
@@ -179,7 +230,7 @@ password_confirm_active = False
 
 username_input_rect = pygame.Rect(60, 230, 320, 50)
 password_input_rect = pygame.Rect(60, 350, 320, 50)
-password_confirm_input_rect = pygame.Rect(60, 650, 320, 50)
+password_confirm_input_rect = pygame.Rect(60, 480, 320, 50)
 
 screen = pygame.display.set_mode((432, 768))
 
