@@ -1,5 +1,7 @@
 import pygame
 import sys
+import db
+import game 
 
 pygame.init()
 BTN_REG_IMG_LOCATION = 'res/btn_register.png'
@@ -116,22 +118,28 @@ def show_register():
 
         if btn_reg_rect.collidepoint((mx, my)):
             if btn_click:
-                handle_register()
+                handle_register(username, password, password_confirm)
         btn_click = False
 
         pygame.display.update()
         clock.tick(120)
 
 
-def handle_register():
-    # TODO
-    return None
+def handle_register(username, password, password_confirm):
+    print(username, password, password_confirm)
+    if (password != password_confirm): 
+        print("Invalid")
+    else:
+        db.signup(username, password)
 
 
-def handle_login():
-    print("login")
-    # TODO
-    return None
+def handle_login(username, password):
+    if (username and password): 
+        is_success = db.login(username, password)
+        if (is_success):
+            game.open_menu()
+    else: 
+        print("Invalid data")
 
 
 def show_login_box():
@@ -211,7 +219,7 @@ def show_login_box():
                 show_register()
         if btn_login_rect.collidepoint((mx, my)):
             if btn_click:
-                handle_login()
+                handle_login(username, password)
         btn_click = False
 
         pygame.display.update()
