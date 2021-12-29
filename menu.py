@@ -8,9 +8,12 @@ BTN_MED_IMG_LOCATION = 'res/btn_medium.png'
 BTN_HARD_IMG_LOCATION = 'res/btn_hard.png'
 BTN_OPTIONS_IMG_LOCATION = 'res/btn_options.png'
 
-def main_menu():
+
+def main_menu(username):
     global click
-    while True:
+    bg_music.play(loops= -1)
+    is_running = True
+    while is_running:
         screen.blit(bg_dim, (0, 0))
 
         text = game_font.render("Choose difficult", True, (255, 255, 255))
@@ -56,8 +59,8 @@ def main_menu():
                 game.start_game()
         if btn_options_rect.collidepoint((mx, my)):
             if click:
-                options()
-
+                if options(username) == 0:
+                    is_running = False
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -70,28 +73,68 @@ def main_menu():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+
         game.road_x_pos -= 1
         game.generate_road()
         if game.road_x_pos <= -432:
             game.road_x_pos = 0
         pygame.display.update()
         mainClock.tick(120)
+    bg_music.stop()
 
 
-def options():
-    global click
+def options(username):
+    global click, btn_music_mute, btn_sfx_mute
     is_running = True
+    is_music_on = True
+    is_sfx_on = True
     while is_running:
         mx, my = pygame.mouse.get_pos()
-        if btn_back_rect.collidepoint((mx, my)):
-            if click:
-                is_running = False
-        click = False
         screen.blit(bg_dim, (0, 0))
         text = game_font.render("Options", True, (255, 255, 255))
         text_rect = text.get_rect(center=(216, 100))
         screen.blit(text, text_rect)
+
+        text = pygame.font.Font('04B_19.TTF', 24).render("You are login as: " + str(username), True, (255, 255, 255))
+        text_rect = text.get_rect(center=(200, 200))
+        screen.blit(text, text_rect)
+
         screen.blit(btn_back, (10, 10))
+        screen.blit(btn_music_mute, (100, 300))
+        screen.blit(btn_sfx_mute, (230, 300))
+        screen.blit(btn_logout, (115, 450))
+        if btn_back_rect.collidepoint((mx, my)):
+            if click:
+                is_running = False
+        if btn_logout_rect.collidepoint((mx, my)):
+            if click:
+                return 0
+        if btn_mute_rect.collidepoint((mx, my)):
+            if click:
+                if is_music_on:
+                    bg_music.stop()
+                    btn_music_mute = btn_mute_off
+                    is_music_on = False
+                else:
+                    bg_music.play()
+                    btn_music_mute = btn_mute
+                    is_music_on = True
+        if btn_sfx_rect.collidepoint((mx, my)):
+            if click:
+                if is_sfx_on:
+                    game.flap_sound.set_volume(0)
+                    game.hit_sound.set_volume(0)
+                    game.score_sound.set_volume(0)
+                    btn_sfx_mute = btn_sfx_off
+                    is_sfx_on = False
+                else:
+                    game.flap_sound.set_volume(100)
+                    game.hit_sound.set_volume(100)
+                    game.score_sound.set_volume(100)
+                    btn_sfx_mute = btn_sfx
+                    is_sfx_on = True
+        click = False
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -110,12 +153,28 @@ def options():
         mainClock.tick(120)
 
 
+pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
+
 pygame.init()
 screen = pygame.display.set_mode((432, 786))
-
+bg_music = pygame.mixer.Sound('sound/bg_music.mp3')
 
 btn_back = pygame.image.load(game.BTN_BACK_LOCATION).convert_alpha()
 btn_back_rect = pygame.Rect(10, 10, 110, 80)
+
+btn_mute = pygame.image.load('res/btn_mute_on.png').convert_alpha()
+btn_mute_rect = pygame.Rect(100, 300, 109, 100)
+btn_mute_off = pygame.image.load('res/btn_mute_off.png').convert_alpha()
+btn_music_mute = btn_mute
+
+btn_sfx = pygame.image.load('res/btn_sfx_on.png').convert_alpha()
+btn_sfx_rect = pygame.Rect(230, 300, 109, 100)
+btn_sfx_off = pygame.image.load('res/btn_sfx_off.png').convert_alpha()
+btn_sfx_mute = btn_sfx
+
+btn_logout = pygame.image.load('res/btn_logout.png').convert_alpha()
+btn_logout_rect = pygame.Rect(115, 450, 210, 90)
+
 game_font = pygame.font.Font('04B_19.TTF', 35)
 easy_btn = pygame.image.load(BTN_EASY_IMG_LOCATION).convert_alpha()
 medium_btn = pygame.image.load(BTN_MED_IMG_LOCATION).convert_alpha()

@@ -11,8 +11,9 @@ def login(username, password):
     if (username and password):
         filter = {'username': username}
         user = db['users'].find_one(filter)
+        if not user:
+            return False
         if (user['password'] == password):
-            print("Login successfully")
             return True
         else:
             return False
@@ -21,8 +22,12 @@ def login(username, password):
 
 
 def signup(username, password):
+    filter = {'username': username}
+    if db['users'].find_one(filter):
+        return False
     user_info = {"username": username, 'password': password};
     db['users'].insert_one(user_info)
+    return True
 
 
 export = score_collection

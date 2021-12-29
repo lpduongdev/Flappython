@@ -9,8 +9,8 @@ BTN_REG_IMG_LOCATION = 'res/btn_register.png'
 BTN_LOGIN_IMG_LOCATION = 'res/btn_login.png'
 
 
-def hide_password_text(password):
-    length = len(password)
+def hide_password_text(passwd):
+    length = len(passwd)
     string = ''
     for x in range(0, length):
         string += '*'
@@ -134,21 +134,70 @@ def show_register():
         clock.tick(120)
 
 
-def handle_register(username, password, password_confirm):
-    print(username, password, password_confirm)
-    if (password != password_confirm):
-        print("Invalid")
-    else:
-        db.signup(username, password)
+def is_valid_input(acc, passwd, passwd_confirm):
+    if len(acc) <= 3:
+        show_dialog("username too short")
+        return False
+    if len(passwd) <= 3:
+        show_dialog("password too short")
+        return False
+    if passwd_confirm != "":
+        if len(passwd_confirm) <= 3:
+            show_dialog("password confirm too short")
+            return False
+        if passwd != passwd_confirm:
+            show_dialog("password doesn't match")
+            return False
+    return True
 
 
-def handle_login(username, password):
-    if (username and password):
-        is_success = db.login(username, password)
-        if (is_success):
-            menu.main_menu()
-    else:
-        print("Invalid data")
+def show_dialog(context):
+    global click
+    is_running = True
+    while is_running:
+        screen.blit(bg, (0, 0))
+        screen.blit(dialog_bg, (5, 300))
+        mx, my = pygame.mouse.get_pos()
+        screen.blit(btn_ok, (220, 430))
+        if btn_ok_rect.collidepoint((mx, my)):
+            if click:
+                is_running = False
+        click = False
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    is_running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    is_running = False
+        game_title = pygame.font.Font('04B_19.TTF', 24).render(context, True, (207, 59, 59))
+        game_title_react = game_title.get_rect(center=(200, 350))
+        screen.blit(game_title, game_title_react)
+        pygame.display.update()
+        clock.tick(120)
+
+
+def handle_register(acc, passwd, passwd_confirm):
+    global username, password, password_confirm
+    if is_valid_input(acc, passwd, passwd_confirm):
+        if db.signup(acc, passwd):
+            show_dialog("Create completed")
+        else:
+            show_dialog("This username already used!")
+    username = ''
+    password = ''
+    password_confirm = ''
+
+
+def handle_login(acc, passwd):
+    global username, password
+    if is_valid_input(acc, passwd, ""):
+        if db.login(acc, passwd):
+            show_dialog("Login successful!")
+            menu.main_menu(acc)
+        else:
+            show_dialog("wrong username/password")
+    password = ''
 
 
 def show_login_box():
@@ -236,6 +285,9 @@ def show_login_box():
         clock.tick(120)
 
 
+DIALOG_BG = 'res/dialog_bg.png'
+BTN_OK_LOCATION = 'res/btn_ok.png'
+
 color_active = pygame.Color('lightskyblue3')
 color_passive = pygame.Color('black')
 color_username = color_passive
@@ -252,11 +304,16 @@ password_confirm_input_rect = pygame.Rect(60, 480, 320, 50)
 
 screen = pygame.display.set_mode((432, 768))
 
-reg_btn = pygame.image.load(BTN_REG_IMG_LOCATION).convert()
-login_btn = pygame.image.load(BTN_LOGIN_IMG_LOCATION).convert()
+reg_btn = pygame.image.load(BTN_REG_IMG_LOCATION).convert_alpha()
+login_btn = pygame.image.load(BTN_LOGIN_IMG_LOCATION).convert_alpha()
 
 btn_back = pygame.image.load(game.BTN_BACK_LOCATION).convert_alpha()
 btn_back_rect = pygame.Rect(10, 10, 110, 80)
+
+dialog_bg = pygame.image.load(DIALOG_BG).convert_alpha()
+
+btn_ok = pygame.image.load(BTN_OK_LOCATION).convert_alpha()
+btn_ok_rect = pygame.Rect(220, 430, 110, 80)
 
 bg = pygame.image.load('res/background-night-dimmed.png').convert()
 game_font = pygame.font.Font('04B_19.TTF', 35)
@@ -268,5 +325,4 @@ password_confirm = ''
 click = True
 btn_click = True
 clock = pygame.time.Clock()
-
 show_login_box()
