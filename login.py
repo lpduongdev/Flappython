@@ -1,7 +1,8 @@
 import pygame
 import sys
 import db
-import game 
+import game
+import menu
 
 pygame.init()
 BTN_REG_IMG_LOCATION = 'res/btn_register.png'
@@ -21,17 +22,22 @@ def show_register():
     username = ''
     password = ''
     password_confirm = ''
-    while True:
+    is_running = True
+    while is_running:
         screen.blit(bg, (0, 0))
+        screen.blit(btn_back, (10, 10))
         mx, my = pygame.mouse.get_pos()
+        if btn_back_rect.collidepoint((mx, my)):
+            if click:
+                is_running = False
+        click = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    is_running = False
                 if username_active:
                     if event.key == pygame.K_BACKSPACE:
                         username = username[:-1]
@@ -48,6 +54,9 @@ def show_register():
                     if (97 <= event.key <= 122 or 48 <= event.key <= 57) and len(password_confirm) < 10:
                         password_confirm += event.unicode
             if event.type == pygame.MOUSEBUTTONDOWN:
+                if btn_back_rect.collidepoint((mx, my)):
+                    if event.button == 1:
+                        is_running = False
                 if event.button == 1:
                     click = True
                     btn_click = True
@@ -85,7 +94,7 @@ def show_register():
         pygame.draw.rect(screen, color_username, username_input_rect, 3)
 
         game_title = pygame.font.Font('04B_19.TTF', 60).render("Flappython", True, (255, 255, 255))
-        game_title_react = game_title.get_rect(center=(225, 75))
+        game_title_react = game_title.get_rect(center=(225, 120))
         screen.blit(game_title, game_title_react)
 
         username_title = game_font.render("Account:", True, (255, 255, 255))
@@ -100,8 +109,8 @@ def show_register():
 
         pygame.draw.rect(screen, color_password_confirm, password_confirm_input_rect, 3)
 
-        password_confirm_title = game_font.render("Password:", True, (255, 255, 255))
-        password_confirm_title_rect = password_confirm_title.get_rect(center=(115, 440))
+        password_confirm_title = game_font.render("Confirm password:", True, (255, 255, 255))
+        password_confirm_title_rect = password_confirm_title.get_rect(center=(190, 440))
         screen.blit(password_confirm_title, password_confirm_title_rect)
 
         username_surface = game_font.render(username, True, (255, 255, 255))
@@ -119,32 +128,33 @@ def show_register():
         if btn_reg_rect.collidepoint((mx, my)):
             if btn_click:
                 handle_register(username, password, password_confirm)
+                is_running = False
         btn_click = False
-
         pygame.display.update()
         clock.tick(120)
 
 
 def handle_register(username, password, password_confirm):
     print(username, password, password_confirm)
-    if (password != password_confirm): 
+    if (password != password_confirm):
         print("Invalid")
     else:
         db.signup(username, password)
 
 
 def handle_login(username, password):
-    if (username and password): 
+    if (username and password):
         is_success = db.login(username, password)
         if (is_success):
-            game.open_menu()
-    else: 
+            menu.main_menu()
+    else:
         print("Invalid data")
 
 
 def show_login_box():
     global color_username, color_password, username, username_active, password, password_active, click, btn_click
-    while True:
+    is_running = True
+    while is_running:
         screen.blit(bg, (0, 0))
         mx, my = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -244,6 +254,9 @@ screen = pygame.display.set_mode((432, 768))
 
 reg_btn = pygame.image.load(BTN_REG_IMG_LOCATION).convert()
 login_btn = pygame.image.load(BTN_LOGIN_IMG_LOCATION).convert()
+
+btn_back = pygame.image.load(game.BTN_BACK_LOCATION).convert_alpha()
+btn_back_rect = pygame.Rect(10, 10, 110, 80)
 
 bg = pygame.image.load('res/background-night-dimmed.png').convert()
 game_font = pygame.font.Font('04B_19.TTF', 35)
