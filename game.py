@@ -21,16 +21,12 @@ GAME_TYPE = -1
 IN_GAME_STATE = 0
 OVER_STATE = 1
 
-
 # DIR
 FONT_LOCATION = '04B_19.ttf'
 BG_LOCATION = 'res/background-night.png'
 BG_DIM_LOCATION = 'res/background-night-dimmed.png'
 ROAD_LOCATION = 'res/road.png'
-BTN_EASY_IMG_LOCATION = 'res/btn_easy.png'
-BTN_MED_IMG_LOCATION = 'res/btn_medium.png'
-BTN_HARD_IMG_LOCATION = 'res/btn_hard.png'
-BTN_OPTIONS_IMG_LOCATION = 'res/btn_options.png'
+BTN_BACK_LOCATION = 'res/btn_back.png'
 BIRD_DOWN_LOCATION = 'res/yellowbird-downflap.png'
 BIRD_MID_LOCATION = 'res/yellowbird-midflap.png'
 BIRD_UP_LOCATION = 'res/yellowbird-upflap.png'
@@ -124,6 +120,11 @@ def start_game():
     is_running = True
     global game_active, bird_movement, score, high_score, road_x_pos, bird_index, pipe_list, bird_rect, bird, click
     while is_running:
+        mx, my = pygame.mouse.get_pos()
+        if btn_back_rect.collidepoint((mx, my)):
+            if click:
+                is_running = False
+        click = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -135,14 +136,15 @@ def start_game():
                         flap_sound.play()
                     if event.key == pygame.K_SPACE and game_active is False:
                         game_active = True
-                        check_first_start = True
                         pipe_list.clear()
                         bird_rect.center = (100, 384)
                         bird_movement = 0
                         score = 0
-                    if event.key == K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE:
                         is_running = False
-            if event.type == MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
                 if game_active:
                     bird_movement = BIRD_MOVEMENT
                     flap_sound.play()
@@ -178,9 +180,11 @@ def start_game():
             if is_passed_pipe(pipe_list):
                 score += 1
             score_display(IN_GAME_STATE)
+            check_first_start = True
         elif game_active is False and check_first_start is False:
             screen.blit(stop_screen_surface, stop_screen_react)
         else:
+            screen.blit(btn_back, (10, 10))
             screen.blit(game_over_surface, game_over_react)
             high_score = update_score(score, high_score)
             score_display(OVER_STATE)
@@ -189,123 +193,16 @@ def start_game():
         generate_road()
         if road_x_pos <= -432:
             road_x_pos = 0
-
         pygame.display.update()
         clock.tick(GAME_SPEED)
-
-
-def main_menu():
-    global click, road_x_pos, GAME_TYPE, GRAVITY, PIPE_BTW_HEIGHT, PIPE_MOVING_SPEED
-    while True:
-        screen.blit(bg_dim, (0, 0))
-
-        text = game_font.render("Choose difficult", True, (255, 255, 255))
-        text_rect = text.get_rect(center=(216, 100))
-        screen.blit(text, text_rect)
-
-        options_text = game_font.render("Game options", True, (255, 255, 255))
-        options_rect = options_text.get_rect(center=(216, 490))
-        screen.blit(options_text, options_rect)
-
-        mx, my = pygame.mouse.get_pos()
-
-        btn_easy_rect = pygame.Rect(116, 150, 200, 80)
-        btn_med_rect = pygame.Rect(116, 250, 200, 80)
-        btn_hard_rect = pygame.Rect(116, 350, 200, 80)
-        btn_options_rect = pygame.Rect(116, 550, 200, 80)
-
-        screen.blit(easy_btn, (115, 150))
-        screen.blit(medium_btn, (115, 250))
-        screen.blit(hard_btn, (115, 350))
-        screen.blit(options_btn, (115, 550))
-
-        if btn_easy_rect.collidepoint((mx, my)):
-            if click:
-                GAME_TYPE = 0
-                GRAVITY = 0.10
-                PIPE_BTW_HEIGHT = 750
-                PIPE_MOVING_SPEED = 5
-                start_game()
-        if btn_med_rect.collidepoint((mx, my)):
-            if click:
-                GAME_TYPE = 1
-                GRAVITY = 0.16
-                PIPE_BTW_HEIGHT = 675
-                PIPE_MOVING_SPEED = 5
-                start_game()
-        if btn_hard_rect.collidepoint((mx, my)):
-            if click:
-                GAME_TYPE = 2
-                GRAVITY = 0.16
-                PIPE_BTW_HEIGHT = 650
-                PIPE_MOVING_SPEED = 7
-                start_game()
-        if btn_options_rect.collidepoint((mx, my)):
-            if click:
-                options()
-
-        click = False
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click = True
-        road_x_pos -= 1
-        generate_road()
-        if road_x_pos <= -432:
-            road_x_pos = 0
-        pygame.display.update()
-        mainClock.tick(GAME_SPEED)
-
-
-def options():
-    global road_x_pos
-    is_running = True
-    while is_running:
-        screen.blit(bg_dim, (0, 0))
-        text = game_font.render("Options", True, (255, 255, 255))
-        text_rect = text.get_rect(center=(216, 100))
-        screen.blit(text, text_rect)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    is_running = False
-        road_x_pos -= 1
-        generate_road()
-        if road_x_pos <= -432:
-            road_x_pos = 0
-        pygame.display.update()
-        mainClock.tick(GAME_SPEED)
-
-
-def draw_text(text, font, color, surface, x, y):
-    textobj = font.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
-    surface.blit(textobj, textrect)
 
 
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
 pygame.init()
 
-
 screen = pygame.display.set_mode((SCREEN_SIZE_X, SCREEN_SIZE_Y))
 clock = pygame.time.Clock()
 game_font = pygame.font.Font(FONT_LOCATION, FONT_SIZE)
-
-easy_btn = pygame.image.load(BTN_EASY_IMG_LOCATION).convert()
-medium_btn = pygame.image.load(BTN_MED_IMG_LOCATION).convert()
-hard_btn = pygame.image.load(BTN_HARD_IMG_LOCATION).convert()
-options_btn = pygame.image.load(BTN_OPTIONS_IMG_LOCATION).convert()
 
 # Tạo các biến cho trò chơi
 bird_movement = 0
@@ -320,6 +217,10 @@ bg_dim = pygame.image.load(BG_DIM_LOCATION).convert()
 road = pygame.image.load(ROAD_LOCATION).convert()
 # floor = pygame.transform.scale2x(floor)
 road_x_pos = 0
+
+btn_back = pygame.image.load(BTN_BACK_LOCATION).convert_alpha()
+btn_back_rect = pygame.Rect(10, 10, 110, 80)
+click = False
 
 # tạo chim
 bird_down = pygame.transform.scale2x(pygame.image.load(BIRD_DOWN_LOCATION).convert_alpha())
@@ -355,13 +256,7 @@ flap_sound = pygame.mixer.Sound(SFX_SWING_LOCATION)
 hit_sound = pygame.mixer.Sound(SFX_HIT_LOCATION)
 score_sound = pygame.mixer.Sound(SFX_PASS_LOCATION)
 
-# start_game()
-
-mainClock = pygame.time.Clock()
-from pygame.locals import *
-
-pygame.init()
 pygame.display.set_caption('Flappython')
 
-click = False
-main_menu()
+if __name__ == "__main__":
+    start_game()
