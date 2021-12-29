@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import db 
 
 
 def draw_floor():
@@ -100,13 +101,11 @@ bg = pygame.transform.scale2x(bg)
 
 # chèn sàn
 
-
 floor = pygame.image.load('res/floor.png').convert()
 floor = pygame.transform.scale2x(floor)
 floor_x_pos = 0
 
 # tạo chim
-
 
 bird_down = pygame.transform.scale2x(pygame.image.load('res/yellowbird-downflap.png').convert_alpha())
 bird_mid = pygame.transform.scale2x(pygame.image.load('res/yellowbird-midflap.png').convert_alpha())
@@ -118,12 +117,10 @@ bird_rect = bird.get_rect(center=(100, 384))
 
 # tạo timer cho bird
 
-
 birdflap = pygame.USEREVENT + 1
 pygame.time.set_timer(birdflap, 200)
 
 # tạo ống
-
 
 pipe_surface = pygame.image.load('res/pipe-green.png').convert()
 pipe_surface = pygame.transform.scale2x(pipe_surface)
@@ -131,10 +128,9 @@ pipe_list = []
 
 # tạo timer
 
-
 spawnpipe = pygame.USEREVENT
-pygame.time.set_timer(spawnpipe, 1200)
-pipe_height = [300, 400, 500]
+pygame.time.set_timer(spawnpipe, 2000)
+pipe_height = [280, 380, 480]
 # Tạo màn hình kết thúc
 game_over_surface = pygame.transform.scale2x(pygame.image.load('res/message.png').convert_alpha())
 game_over_rect = game_over_surface.get_rect(center=(216, 384))
