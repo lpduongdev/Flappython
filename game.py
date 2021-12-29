@@ -364,4 +364,10 @@ pygame.init()
 pygame.display.set_caption('Flappython')
 
 click = False
-main_menu()
+
+def open_menu(): 
+    main_menu()
+
+
+export = {}
+open_menu()
