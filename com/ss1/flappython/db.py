@@ -7,11 +7,10 @@ score_collection = {}
 def login(username, password):
     username = username.lower()
     if username and password:
-        filter = {'username_text': username}
-        user = db['users'].find_one(filter)
+        user = db['users'].find_one({'username_text': username})
         if not user:
             return False
-        if (user['password'] == password):
+        if user['password'] == password:
             return True
         else:
             return False
@@ -21,8 +20,7 @@ def login(username, password):
 
 def signup(username, password):
     username = username.lower()
-    filter = {'username_text': username}
-    if db['users'].find_one(filter):
+    if db['users'].find_one({'username_text': username}):
         return False
     user_info = {"username_text": username,
                  'password': password,
@@ -78,7 +76,6 @@ def get_top_five_hard():
                        'point': str(x['hard_score'])
                        })
     return result
-
 
 
 def get_score(username):

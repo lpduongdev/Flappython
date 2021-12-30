@@ -82,63 +82,65 @@ def main_menu(username):
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-        game.road_x_pos -= 1
-        game.generate_road()
-        if game.road_x_pos <= -432:
-            game.road_x_pos = 0
+        game.animate_road()
         pygame.display.update()
         mainClock.tick(120)
     bg_music.stop()
 
 
+def show_user_info(user_info):
+    easy_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score easy: " + str(user_info[0]),
+                                                                         True, (255, 255, 255))
+    easy_score_rect = easy_score_text.get_rect(center=(150, 250))
+    screen.blit(easy_score_text, easy_score_rect)
+
+    medium_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score medium: " + str(user_info[1]),
+                                                                           True,
+                                                                           (255, 255, 255))
+    medium_score_rect = medium_score_text.get_rect(center=(165, 300))
+    screen.blit(medium_score_text, medium_score_rect)
+
+    hard_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score hard: " + str(user_info[2]), True,
+                                                                         (255, 255, 255))
+    hard_score_rect = hard_score_text.get_rect(center=(150, 350))
+    screen.blit(hard_score_text, hard_score_rect)
+
+    times_text = pygame.font.Font('../../../04B_19.TTF', 24).render(
+        "You have played: " + str(user_info[3]) + " times", True,
+        (255, 255, 255))
+    times_rect = times_text.get_rect(center=(200, 400))
+    screen.blit(times_text, times_rect)
+
+
+
 def options(username):
     global click, btn_music_mute, btn_sfx_mute, is_music_on, is_sfx_on
     is_running = True
-    user_info = db.get_score(username)
+    user_info = None
+    if username != "GUEST":
+        user_info = db.get_score(username)
     while is_running:
         mx, my = pygame.mouse.get_pos()
         screen.blit(bg_dim, (0, 0))
 
-        game.road_x_pos -= 1
-        game.generate_road()
-        if game.road_x_pos <= -432:
-            game.road_x_pos = 0
+        game.animate_road()
 
         text = game_font.render("Options", True, (255, 255, 255))
         text_rect = text.get_rect(center=(216, 100))
         screen.blit(text, text_rect)
 
         title_text = pygame.font.Font('../../../04B_19.TTF', 24).render("You are login as: " + str(username), True,
-                                                                        (255, 255, 255))
+                                                                    (255, 255, 255))
+        if username != 'GUEST':
+            show_user_info(user_info)
         title_rect = title_text.get_rect(center=(200, 200))
         screen.blit(title_text, title_rect)
-
-        easy_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score easy: " + str(user_info[0]),
-                                                                             True, (255, 255, 255))
-        easy_score_rect = easy_score_text.get_rect(center=(150, 250))
-        screen.blit(easy_score_text, easy_score_rect)
-
-        medium_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score medium: " + str(user_info[1]),
-                                                                               True,
-                                                                               (255, 255, 255))
-        medium_score_rect = medium_score_text.get_rect(center=(165, 300))
-        screen.blit(medium_score_text, medium_score_rect)
-
-        hard_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score hard: " + str(user_info[2]), True,
-                                                                             (255, 255, 255))
-        hard_score_rect = hard_score_text.get_rect(center=(150, 350))
-        screen.blit(hard_score_text, hard_score_rect)
-
-        times_text = pygame.font.Font('../../../04B_19.TTF', 24).render(
-            "You have played: " + str(user_info[3]) + " times", True,
-            (255, 255, 255))
-        times_rect = times_text.get_rect(center=(200, 400))
-        screen.blit(times_text, times_rect)
 
         screen.blit(btn_back, (10, 10))
         screen.blit(btn_music_mute, (100, 500))
         screen.blit(btn_sfx_mute, (230, 500))
         screen.blit(btn_logout, (115, 650))
+
         if btn_back_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_back_hover.png'), (10, 10))
             if click:

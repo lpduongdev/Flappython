@@ -123,6 +123,7 @@ def show_register():
     is_running = True
     while is_running:
         screen.blit(bg, (0, 0))
+        game.animate_road()
         screen.blit(btn_back, (10, 10))
         mx, my = pygame.mouse.get_pos()
         if btn_back_rect.collidepoint((mx, my)):
@@ -235,10 +236,6 @@ def show_register():
                 handle_register(reg_account)
                 is_running = False
         btn_click = False
-        game.road_x_pos -= 1
-        game.generate_road()
-        if game.road_x_pos <= -432:
-            game.road_x_pos = 0
         pygame.display.update()
         clock.tick(120)
 
@@ -271,6 +268,7 @@ def show_login_box():
     account = Account('', '')
     while is_running:
         screen.blit(bg, (0, 0))
+        game.animate_road()
         mx, my = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -339,6 +337,15 @@ def show_login_box():
         screen.blit(reg_btn, (115, 420))
         screen.blit(login_btn, (115, 520))
 
+        guest_title = game_font.render("Play as Guest", True, (255, 255, 255))
+        guest_rect = pygame.Rect(100, 630, 240, 40)
+        guest_title_rect = guest_title.get_rect(center=(220, 650))
+        screen.blit(guest_title, guest_title_rect)
+        if guest_rect.collidepoint((mx, my)):
+            guest_title = game_font.render("Play as Guest", True, (255, 0, 0))
+            screen.blit(guest_title, guest_title_rect)
+            if btn_click:
+                menu.main_menu("GUEST")
         if btn_reg_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_register_hover.png'), (115, 420))
             if btn_click:
@@ -348,10 +355,6 @@ def show_login_box():
             if btn_click:
                 handle_login(account)
         btn_click = False
-        game.road_x_pos -= 1
-        game.generate_road()
-        if game.road_x_pos <= -432:
-            game.road_x_pos = 0
         pygame.display.update()
         clock.tick(120)
 
@@ -395,5 +398,3 @@ pygame.display.set_caption("Flappython")
 click = True
 btn_click = True
 clock = pygame.time.Clock()
-
-

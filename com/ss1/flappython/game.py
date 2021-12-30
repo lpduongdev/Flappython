@@ -97,12 +97,28 @@ def score_display(state):
         score_rect = score_surface.get_rect(center=(216, 100))
         screen.blit(score_surface, score_rect)
     if state == 1:
-        score_surface = game_font.render(f'Score: {int(score)}', True, (255, 255, 255))
-        score_rect = score_surface.get_rect(center=(216, 100))
-        screen.blit(score_surface, score_rect)
+        tmp_surface = game_font.render(f'Score: {int(score)}', True, (255, 255, 255))
+        tmp_rect = tmp_surface.get_rect(center=(216, 360))
+        screen.blit(tmp_surface, tmp_rect)
 
         high_score_surface = game_font.render(f'High Score: {int(high_score)}', True, (255, 255, 255))
-        high_score_rect = high_score_surface.get_rect(center=(216, 630))
+        high_score_rect = high_score_surface.get_rect(center=(216, 400))
+        screen.blit(high_score_surface, high_score_rect)
+
+        high_score_surface = game_font.render("Press space", True, (255, 255, 255))
+        high_score_rect = high_score_surface.get_rect(center=(216, 500))
+        screen.blit(high_score_surface, high_score_rect)
+
+        high_score_surface = game_font.render("or click mouse", True, (255, 255, 255))
+        high_score_rect = high_score_surface.get_rect(center=(216, 540))
+        screen.blit(high_score_surface, high_score_rect)
+
+        high_score_surface = game_font.render("to continue", True, (255, 255, 255))
+        high_score_rect = high_score_surface.get_rect(center=(216, 580))
+        screen.blit(high_score_surface, high_score_rect)
+
+        high_score_surface = game_font.render("Press ESC to quit", True, (255, 255, 255))
+        high_score_rect = high_score_surface.get_rect(center=(216, 40))
         screen.blit(high_score_surface, high_score_rect)
 
 
@@ -111,31 +127,36 @@ def generate_top_five(top_info):
     index = 0
     for x in top_info:
         if index == 0:
-            top1_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True, (255, 255, 255))
+            top1_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True,
+                                             (255, 255, 255))
             screen.blit(top1_text, top1_rect)
             score_text = top_list_font.render(str(top_info[index]['point']), True, (255, 255, 255))
             score_rect = score_text.get_rect(center=(380, 350))
             screen.blit(score_text, score_rect)
         elif index == 1:
-            top2_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True, (255, 255, 255))
+            top2_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True,
+                                             (255, 255, 255))
             screen.blit(top2_text, top2_rect)
             score_text = top_list_font.render(str(top_info[index]['point']), True, (255, 255, 255))
             score_rect = score_text.get_rect(center=(380, 400))
             screen.blit(score_text, score_rect)
         if index == 2:
-            top3_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True, (255, 255, 255))
+            top3_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True,
+                                             (255, 255, 255))
             screen.blit(top3_text, top3_rect)
             score_text = top_list_font.render(str(top_info[index]['point']), True, (255, 255, 255))
             score_rect = score_text.get_rect(center=(380, 450))
             screen.blit(score_text, score_rect)
         if index == 3:
-            top4_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True, (255, 255, 255))
+            top4_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True,
+                                             (255, 255, 255))
             screen.blit(top4_text, top4_rect)
             score_text = top_list_font.render(str(top_info[index]['point']), True, (255, 255, 255))
             score_rect = score_text.get_rect(center=(380, 500))
             screen.blit(score_text, score_rect)
         if index == 4:
-            top5_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True, (255, 255, 255))
+            top5_text = top_list_font.render(str(index + 1) + ": " + str(top_info[index]['name']), True,
+                                             (255, 255, 255))
             screen.blit(top5_text, top5_rect)
             score_text = top_list_font.render(str(top_info[index]['point']), True, (255, 255, 255))
             score_rect = score_text.get_rect(center=(380, 550))
@@ -214,15 +235,19 @@ def stop_screen(level, point):
     return True
 
 
+def animate_road():
+    global road_x_pos
+    road_x_pos -= 1
+    generate_road()
+    if road_x_pos <= -432:
+        road_x_pos = 0
+
+
 def start_game(username, level):
     global bird_movement, score, high_score, road_x_pos, bird_index, pipe_list, bird_rect, bird, click
     game_active = IS_ACTIVE
     show_pause_screen = True
     is_running = True
-    pipe_list.clear()
-    bird_rect.center = (100, 384)
-    bird_movement = 0
-    score = 0
     while is_running:
         mx, my = pygame.mouse.get_pos()
         screen.blit(bg, (0, 0))
@@ -239,17 +264,24 @@ def start_game(username, level):
                 score += 1
             score_display(IN_GAME_STATE)
         elif not game_active and show_pause_screen:
+            screen.blit(bg_dim, (0,0))
             screen.blit(stop_screen_surface, stop_screen_react)
         else:
-            db.save_result(score, username, level)
-            if stop_screen(level, score):
-                pipe_list.clear()
-                bird_rect.center = (100, 384)
-                bird_movement = 0
-                score = 0
+            if username != "GUEST":
+                db.save_result(score, username, level)
+                if stop_screen(level, score):
+                    pipe_list.clear()
+                    bird_rect.center = (100, 384)
+                    bird_movement = 0
+                    score = 0
+                else:
+                    is_running = False
+                show_pause_screen = True
             else:
-                is_running = False
-            show_pause_screen = True
+                screen.blit(bg_dim, (0,0))
+                screen.blit(game_over_surface, game_over_react)
+                high_score = update_score(score, high_score)
+                score_display(OVER_STATE)
         if btn_back_rect.collidepoint((mx, my)):
             if click:
                 is_running = False
@@ -295,10 +327,7 @@ def start_game(username, level):
                 else:
                     bird_index = 0
                 bird, bird_rect = bird_animation()
-        road_x_pos -= 1
-        generate_road()
-        if road_x_pos <= -432:
-            road_x_pos = 0
+        animate_road()
         pygame.display.update()
         clock.tick(GAME_SPEED)
 
