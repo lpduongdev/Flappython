@@ -43,7 +43,7 @@ def main_menu(username):
                 game.GRAVITY = 0.10
                 game.PIPE_BTW_HEIGHT = 750
                 game.PIPE_MOVING_SPEED = 5
-                game.start_game(username)
+                game.start_game(username, 'easy_score')
         if btn_med_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_medium_hover.png'), (115, 250))
             if click:
@@ -51,7 +51,7 @@ def main_menu(username):
                 game.GRAVITY = 0.16
                 game.PIPE_BTW_HEIGHT = 675
                 game.PIPE_MOVING_SPEED = 5
-                game.start_game(username)
+                game.start_game(username, 'medium_score')
         if btn_hard_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_hard_hover.png'), (115, 350))
             if click:
@@ -59,7 +59,7 @@ def main_menu(username):
                 game.GRAVITY = 0.16
                 game.PIPE_BTW_HEIGHT = 650
                 game.PIPE_MOVING_SPEED = 7
-                game.start_game(username)
+                game.start_game(username, 'hard_score')
         if btn_options_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_options_hover.png'), (115, 550))
             if click:

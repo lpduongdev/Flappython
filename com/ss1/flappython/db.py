@@ -35,21 +35,32 @@ def signup(username, password):
     return True
 
 
-def save_result(score, username):
+def save_result(score, username, level):
     username = username.lower()
+    print(score, username, level)
     if score >= 0 and username:
         user = db['users'].find_one({'username_text': username})
-        db['attempts'].insert_one({'username_text': username, 'score': score, 'created_at': datetime.now()})
-        if user['highscore'] < score:
-            db['users'].update_one({'username_text': username}, {
-                '$set': {
-                    'highscore': score
-                }
-            })
+        db['users'].update_one({'username_text': username}, {
+            '$set': {
+                level: score if user[level] < score else user[level],
+                'count': user['count']+1
+            }
+        })    
         return True
     else:
         print("Invalid")
         return False
 
+def get_top_five_easy():
+    top_five = db['users'].find({}).sort({'easy_score': -1}).limit(5)
+    return top_five
+
+def get_top_five_medium():
+    top_five = db['users'].find({}).sort({'medium_score': -1}).limit(5)
+    return top_five
+
+def get_top_five_hard():
+    top_five = db['users'].find({}).sort({'hard_score': -1}).limit(5)
+    return top_five
 
 export = score_collection

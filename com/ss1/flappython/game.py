@@ -116,7 +116,7 @@ def is_passed_pipe(pipes):
     return False
 
 
-def start_game(username):
+def start_game(username, level):
     print(username)
     first_start = True
     is_running = True
@@ -179,8 +179,7 @@ def start_game(username):
             screen.blit(rotated_bird, bird_rect)
             game_active = check_collision(pipe_list)
             if (game_active == False): 
-                db.save_result(score, username)
-                print("Saved")
+                db.save_result(score, username, level)
             # ống
             pipe_list = move_pipe(pipe_list)
             draw_pipe(pipe_list)
