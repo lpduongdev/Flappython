@@ -3,10 +3,15 @@ import game
 import sys
 from pygame.locals import *
 
+from com.ss1.flappython import db
+
 BTN_EASY_IMG_LOCATION = '../../../res/btn_easy.png'
 BTN_MED_IMG_LOCATION = '../../../res/btn_medium.png'
 BTN_HARD_IMG_LOCATION = '../../../res/btn_hard.png'
 BTN_OPTIONS_IMG_LOCATION = '../../../res/btn_options.png'
+GAME_MODE_EASY = 'easy_score'
+GAME_MODE_MEDIUM = 'medium_score'
+GAME_MODE_HARD = 'hard_score'
 
 
 def main_menu(username):
@@ -43,7 +48,7 @@ def main_menu(username):
                 game.GRAVITY = 0.10
                 game.PIPE_BTW_HEIGHT = 750
                 game.PIPE_MOVING_SPEED = 5
-                game.start_game(username, 'easy_score')
+                game.start_game(username, GAME_MODE_EASY)
         if btn_med_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_medium_hover.png'), (115, 250))
             if click:
@@ -51,7 +56,7 @@ def main_menu(username):
                 game.GRAVITY = 0.16
                 game.PIPE_BTW_HEIGHT = 675
                 game.PIPE_MOVING_SPEED = 5
-                game.start_game(username, 'medium_score')
+                game.start_game(username, GAME_MODE_MEDIUM)
         if btn_hard_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_hard_hover.png'), (115, 350))
             if click:
@@ -59,7 +64,7 @@ def main_menu(username):
                 game.GRAVITY = 0.16
                 game.PIPE_BTW_HEIGHT = 650
                 game.PIPE_MOVING_SPEED = 7
-                game.start_game(username, 'hard_score')
+                game.start_game(username, GAME_MODE_HARD)
         if btn_options_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_options_hover.png'), (115, 550))
             if click:
@@ -87,36 +92,63 @@ def main_menu(username):
 
 
 def options(username):
-    global click, btn_music_mute, btn_sfx_mute
+    global click, btn_music_mute, btn_sfx_mute, is_music_on, is_sfx_on
     is_running = True
-    is_music_on = True
-    is_sfx_on = True
+    user_info = db.get_score(username)
     while is_running:
         mx, my = pygame.mouse.get_pos()
         screen.blit(bg_dim, (0, 0))
+
+        game.road_x_pos -= 1
+        game.generate_road()
+        if game.road_x_pos <= -432:
+            game.road_x_pos = 0
+
         text = game_font.render("Options", True, (255, 255, 255))
         text_rect = text.get_rect(center=(216, 100))
         screen.blit(text, text_rect)
 
-        text = pygame.font.Font('../../../04B_19.TTF', 24).render("You are login as: " + str(username), True,
-                                                                  (255, 255, 255))
-        text_rect = text.get_rect(center=(200, 200))
-        screen.blit(text, text_rect)
+        title_text = pygame.font.Font('../../../04B_19.TTF', 24).render("You are login as: " + str(username), True,
+                                                                        (255, 255, 255))
+        title_rect = title_text.get_rect(center=(200, 200))
+        screen.blit(title_text, title_rect)
+
+        easy_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score easy: " + str(user_info[0]),
+                                                                             True, (255, 255, 255))
+        easy_score_rect = easy_score_text.get_rect(center=(150, 250))
+        screen.blit(easy_score_text, easy_score_rect)
+
+        medium_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score medium: " + str(user_info[1]),
+                                                                               True,
+                                                                               (255, 255, 255))
+        medium_score_rect = medium_score_text.get_rect(center=(165, 300))
+        screen.blit(medium_score_text, medium_score_rect)
+
+        hard_score_text = pygame.font.Font('../../../04B_19.TTF', 24).render("Score hard: " + str(user_info[2]), True,
+                                                                             (255, 255, 255))
+        hard_score_rect = hard_score_text.get_rect(center=(150, 350))
+        screen.blit(hard_score_text, hard_score_rect)
+
+        times_text = pygame.font.Font('../../../04B_19.TTF', 24).render(
+            "You have played: " + str(user_info[3]) + " times", True,
+            (255, 255, 255))
+        times_rect = times_text.get_rect(center=(200, 400))
+        screen.blit(times_text, times_rect)
 
         screen.blit(btn_back, (10, 10))
-        screen.blit(btn_music_mute, (100, 300))
-        screen.blit(btn_sfx_mute, (230, 300))
-        screen.blit(btn_logout, (115, 450))
+        screen.blit(btn_music_mute, (100, 500))
+        screen.blit(btn_sfx_mute, (230, 500))
+        screen.blit(btn_logout, (115, 650))
         if btn_back_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_back_hover.png'), (10, 10))
             if click:
                 is_running = False
         if btn_logout_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_logout_hover.png'), (115, 450))
+            screen.blit(pygame.image.load('../../../res/btn_logout_hover.png'), (115, 650))
             if click:
                 return 0
         if btn_mute_rect.collidepoint((mx, my)):
-            if is_music_on: screen.blit(pygame.image.load('../../../res/btn_mute_hover.png'), (100, 300))
+            if is_music_on: screen.blit(pygame.image.load('../../../res/btn_mute_hover.png'), (100, 500))
             if click:
                 if is_music_on:
                     bg_music.stop()
@@ -127,7 +159,7 @@ def options(username):
                     btn_music_mute = btn_mute
                     is_music_on = True
         if btn_sfx_rect.collidepoint((mx, my)):
-            if is_sfx_on: screen.blit(pygame.image.load('../../../res/btn_sfx_hover.png'), (230, 300))
+            if is_sfx_on: screen.blit(pygame.image.load('../../../res/btn_sfx_hover.png'), (230, 500))
             if click:
                 if is_sfx_on:
                     game.flap_sound.set_volume(0)
@@ -153,10 +185,6 @@ def options(username):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-        game.road_x_pos -= 1
-        game.generate_road()
-        if game.road_x_pos <= -432:
-            game.road_x_pos = 0
         pygame.display.update()
         mainClock.tick(120)
 
@@ -171,17 +199,17 @@ btn_back = pygame.image.load(game.BTN_BACK_LOCATION).convert_alpha()
 btn_back_rect = pygame.Rect(10, 10, 110, 80)
 
 btn_mute = pygame.image.load('../../../res/btn_mute_on.png').convert_alpha()
-btn_mute_rect = pygame.Rect(100, 300, 109, 100)
+btn_mute_rect = pygame.Rect(100, 500, 109, 100)
 btn_mute_off = pygame.image.load('../../../res/btn_mute_off.png').convert_alpha()
 btn_music_mute = btn_mute
 
 btn_sfx = pygame.image.load('../../../res/btn_sfx_on.png').convert_alpha()
-btn_sfx_rect = pygame.Rect(230, 300, 109, 100)
+btn_sfx_rect = pygame.Rect(230, 500, 109, 100)
 btn_sfx_off = pygame.image.load('../../../res/btn_sfx_off.png').convert_alpha()
 btn_sfx_mute = btn_sfx
 
 btn_logout = pygame.image.load('../../../res/btn_logout.png').convert_alpha()
-btn_logout_rect = pygame.Rect(115, 450, 210, 90)
+btn_logout_rect = pygame.Rect(115, 650, 210, 90)
 
 game_font = pygame.font.Font('../../../04B_19.TTF', 35)
 easy_btn = pygame.image.load(BTN_EASY_IMG_LOCATION).convert_alpha()
@@ -191,3 +219,6 @@ options_btn = pygame.image.load(BTN_OPTIONS_IMG_LOCATION).convert_alpha()
 bg_dim = pygame.image.load(game.BG_DIM_LOCATION).convert()
 mainClock = pygame.time.Clock()
 click = False
+
+is_music_on = True
+is_sfx_on = True
