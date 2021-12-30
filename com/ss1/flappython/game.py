@@ -22,20 +22,20 @@ IN_GAME_STATE = 0
 OVER_STATE = 1
 
 # DIR
-FONT_LOCATION = '04B_19.ttf'
-BG_LOCATION = 'res/background-night.png'
-BG_DIM_LOCATION = 'res/background-night-dimmed.png'
-ROAD_LOCATION = 'res/road.png'
-BTN_BACK_LOCATION = 'res/btn_back.png'
-BIRD_DOWN_LOCATION = 'res/yellowbird-downflap.png'
-BIRD_MID_LOCATION = 'res/yellowbird-midflap.png'
-BIRD_UP_LOCATION = 'res/yellowbird-upflap.png'
-PIPE_LOCATION = 'res/pipe-green.png'
-MSG_LOCATION = 'res/message.png'
-OVER_LOCATION = 'res/gameover.png'
-SFX_SWING_LOCATION = 'sound/sfx_wing.wav'
-SFX_HIT_LOCATION = 'sound/sfx_hit.wav'
-SFX_PASS_LOCATION = 'sound/sfx_point.wav'
+FONT_LOCATION = '../../../04B_19.ttf'
+BG_LOCATION = '../../../res/background-night.png'
+BG_DIM_LOCATION = '../../../res/background-night-dimmed.png'
+ROAD_LOCATION = '../../../res/road.png'
+BTN_BACK_LOCATION = '../../../res/btn_back.png'
+BIRD_DOWN_LOCATION = '../../../res/yellowbird-downflap.png'
+BIRD_MID_LOCATION = '../../../res/yellowbird-midflap.png'
+BIRD_UP_LOCATION = '../../../res/yellowbird-upflap.png'
+PIPE_LOCATION = '../../../res/pipe-green.png'
+MSG_LOCATION = '../../../res/message.png'
+OVER_LOCATION = '../../../res/gameover.png'
+SFX_SWING_LOCATION = '../../../sound/sfx_wing.wav'
+SFX_HIT_LOCATION = '../../../sound/sfx_hit.wav'
+SFX_PASS_LOCATION = '../../../sound/sfx_point.wav'
 
 
 def generate_road():
@@ -116,14 +116,19 @@ def is_passed_pipe(pipes):
 
 
 def start_game():
-    check_first_start = False
+    first_start = True
     is_running = True
     global game_active, bird_movement, score, high_score, road_x_pos, bird_index, pipe_list, bird_rect, bird, click
     while is_running:
+        is_hover = False
         mx, my = pygame.mouse.get_pos()
         if btn_back_rect.collidepoint((mx, my)):
+            is_hover = True
             if click:
                 is_running = False
+        else:
+            if click:
+                game_active = True
         click = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -134,7 +139,7 @@ def start_game():
                     if event.key == pygame.K_SPACE and game_active:
                         bird_movement = BIRD_MOVEMENT
                         flap_sound.play()
-                    if event.key == pygame.K_SPACE and game_active is False:
+                    if event.key == pygame.K_SPACE and not game_active:
                         game_active = True
                         pipe_list.clear()
                         bird_rect.center = (100, 384)
@@ -149,7 +154,6 @@ def start_game():
                     bird_movement = BIRD_MOVEMENT
                     flap_sound.play()
                 else:
-                    game_active = True
                     pipe_list.clear()
                     bird_rect.center = (100, 384)
                     bird_movement = 0
@@ -180,11 +184,14 @@ def start_game():
             if is_passed_pipe(pipe_list):
                 score += 1
             score_display(IN_GAME_STATE)
-            check_first_start = True
-        elif game_active is False and check_first_start is False:
+            first_start = False
+        elif not game_active and first_start:
             screen.blit(stop_screen_surface, stop_screen_react)
         else:
-            screen.blit(btn_back, (10, 10))
+            if is_hover:
+                screen.blit(pygame.image.load('../../../res/btn_back_hover.png'), (10, 10))
+            else:
+                screen.blit(btn_back, (10, 10))
             screen.blit(game_over_surface, game_over_react)
             high_score = update_score(score, high_score)
             score_display(OVER_STATE)
@@ -204,25 +211,24 @@ screen = pygame.display.set_mode((SCREEN_SIZE_X, SCREEN_SIZE_Y))
 clock = pygame.time.Clock()
 game_font = pygame.font.Font(FONT_LOCATION, FONT_SIZE)
 
-# Tạo các biến cho trò chơi
 bird_movement = 0
 game_active = IS_ACTIVE
 score = 0
 high_score = 0
 
-# chèn background
+
 bg = pygame.image.load(BG_LOCATION).convert()
 bg_dim = pygame.image.load(BG_DIM_LOCATION).convert()
-# chèn sàn
+
 road = pygame.image.load(ROAD_LOCATION).convert()
-# floor = pygame.transform.scale2x(floor)
+
 road_x_pos = 0
 
 btn_back = pygame.image.load(BTN_BACK_LOCATION).convert_alpha()
 btn_back_rect = pygame.Rect(10, 10, 110, 80)
 click = False
 
-# tạo chim
+
 bird_down = pygame.transform.scale2x(pygame.image.load(BIRD_DOWN_LOCATION).convert_alpha())
 bird_mid = pygame.transform.scale2x(pygame.image.load(BIRD_MID_LOCATION).convert_alpha())
 bird_up = pygame.transform.scale2x(pygame.image.load(BIRD_UP_LOCATION).convert_alpha())
@@ -231,32 +237,24 @@ bird_index = 0
 bird = bird_list[bird_index]
 bird_rect = bird.get_rect(center=(100, 384))
 
-# tạo timer cho bird
 birdflap = pygame.USEREVENT + 1
 pygame.time.set_timer(birdflap, OBJECT_IMG_CHANGE_TIMER)
 
-# tạo ống
 pipe_surface = pygame.image.load(PIPE_LOCATION).convert()
 pipe_surface = pygame.transform.scale2x(pipe_surface)
 pipe_list = []
 
-# tạo timer
 spawnpipe = pygame.USEREVENT
 pygame.time.set_timer(spawnpipe, SPAWN_PIPE_TIMER)
 
-# Tạo màn hình kết thúc
 stop_screen_surface = pygame.transform.scale2x(pygame.image.load(MSG_LOCATION).convert_alpha())
 stop_screen_react = stop_screen_surface.get_rect(center=(216, 384))
 
 game_over_surface = pygame.transform.scale2x(pygame.image.load(OVER_LOCATION).convert_alpha())
 game_over_react = game_over_surface.get_rect(center=(216, 384))
 
-# Chèn âm thanh
 flap_sound = pygame.mixer.Sound(SFX_SWING_LOCATION)
 hit_sound = pygame.mixer.Sound(SFX_HIT_LOCATION)
 score_sound = pygame.mixer.Sound(SFX_PASS_LOCATION)
 
-pygame.display.set_caption('Flappython')
 
-if __name__ == "__main__":
-    start_game()
