@@ -68,7 +68,7 @@ def generate_password_display(number):
 
 def is_valid(acc, plain_password, plain_password_confirm=None):
     if len(acc) <= 3:
-        show_dialog("username_text too short")
+        show_dialog("username too short")
         return False
     if len(plain_password) <= 3:
         show_dialog("password too short")
@@ -103,9 +103,13 @@ def show_dialog(context):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     is_running = False
-        game_title = pygame.font.Font('../../../04B_19.TTF', 24).render(context, True, (207, 59, 59))
+        game_title = pygame.font.Font('../../../04B_19.TTF', 24).render(context, True, (36, 36, 36))
         game_title_react = game_title.get_rect(center=(200, 350))
         screen.blit(game_title, game_title_react)
+        game.road_x_pos -= 1
+        game.generate_road()
+        if game.road_x_pos <= -432:
+            game.road_x_pos = 0
         pygame.display.update()
         clock.tick(120)
 
@@ -228,6 +232,10 @@ def show_register():
                 handle_register(reg_account)
                 is_running = False
         btn_click = False
+        game.road_x_pos -= 1
+        game.generate_road()
+        if game.road_x_pos <= -432:
+            game.road_x_pos = 0
         pygame.display.update()
         clock.tick(120)
 
@@ -241,7 +249,7 @@ def handle_register(account):
         if db.signup(acc, passwd):
             show_dialog("Create completed")
         else:
-            show_dialog("This username_text already used!")
+            show_dialog("This username already used!")
 
 
 def handle_login(account):
@@ -251,7 +259,7 @@ def handle_login(account):
             show_dialog("Login successful!")
             menu.main_menu(account.get_username())
         else:
-            show_dialog("wrong username_text/password")
+            show_dialog("wrong username/password")
 
 
 def show_login_box():
@@ -337,7 +345,10 @@ def show_login_box():
             if btn_click:
                 handle_login(account)
         btn_click = False
-
+        game.road_x_pos -= 1
+        game.generate_road()
+        if game.road_x_pos <= -432:
+            game.road_x_pos = 0
         pygame.display.update()
         clock.tick(120)
 
@@ -381,6 +392,3 @@ pygame.display.set_caption("Flappython")
 click = True
 btn_click = True
 clock = pygame.time.Clock()
-
-if __name__ == "__main__":
-    show_login_box()
