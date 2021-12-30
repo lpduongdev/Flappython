@@ -54,7 +54,6 @@ def main_menu(username):
                 game.start_game(username)
         if btn_hard_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_hard_hover.png'), (115, 350))
-
             if click:
                 game.GAME_TYPE = 2
                 game.GRAVITY = 0.16
@@ -63,7 +62,6 @@ def main_menu(username):
                 game.start_game(username)
         if btn_options_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_options_hover.png'), (115, 550))
-
             if click:
                 if options(username) == 0:
                     is_running = False

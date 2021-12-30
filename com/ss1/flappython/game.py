@@ -1,7 +1,6 @@
 import pygame
 import random
 import sys
-import login
 import db
 
 # GLOBAL VARIATIONS
@@ -182,7 +181,6 @@ def start_game(username):
             if (game_active == False): 
                 db.save_result(score, username)
                 print("Saved")
-                continue
             # ống
             pipe_list = move_pipe(pipe_list)
             draw_pipe(pipe_list)
