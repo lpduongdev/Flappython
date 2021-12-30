@@ -218,9 +218,9 @@ def stop_screen(level, point):
         if road_x_pos <= -432:
             road_x_pos = 0
         btn_again_rect = pygame.Rect(116, 650, 200, 80)
-        screen.blit(pygame.image.load('../../../res/btn_again.png').convert_alpha(), (116, 650))
+        screen.blit(pygame.image.load('res/btn_again.png').convert_alpha(), (116, 650))
         if btn_again_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_again_hover.png'), (115, 650))
+            screen.blit(pygame.image.load('res/btn_again_hover.png'), (115, 650))
             if click:
                 is_running = False
         if btn_back_rect.collidepoint((mx, my)):
@@ -229,7 +229,7 @@ def stop_screen(level, point):
                 return False
         click = False
         if is_hover:
-            screen.blit(pygame.image.load('../../../res/btn_back_hover.png'), (10, 10))
+            screen.blit(pygame.image.load('res/btn_back_hover.png'), (10, 10))
         pygame.display.update()
         clock.tick(GAME_SPEED)
     return True
@@ -392,7 +392,7 @@ medium_score_rect = medium_score_text.get_rect(center=(200, 250))
 hard_score_text = game_font.render("Top point hard: ", True, (255, 255, 255))
 hard_score_rect = hard_score_text.get_rect(center=(170, 250))
 
-top_list_font = pygame.font.Font('../../../04B_19.TTF', 26)
+top_list_font = pygame.font.Font('04B_19.TTF', 26)
 
 top1_text = top_list_font.render("Top 1: ", True, (255, 255, 255))
 top1_rect = top1_text.get_rect(center=(70, 350))

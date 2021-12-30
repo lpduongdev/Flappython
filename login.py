@@ -92,7 +92,7 @@ def show_dialog(context):
         mx, my = pygame.mouse.get_pos()
         screen.blit(btn_ok, (220, 430))
         if btn_ok_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_ok_hover.png'), (220, 430))
+            screen.blit(pygame.image.load('res/btn_ok_hover.png'), (220, 430))
             if click:
                 is_running = False
         click = False
@@ -106,7 +106,7 @@ def show_dialog(context):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     is_running = False
-        game_title = pygame.font.Font('../../../04B_19.TTF', 24).render(context, True, (36, 36, 36))
+        game_title = pygame.font.Font('04B_19.TTF', 24).render(context, True, (36, 36, 36))
         game_title_react = game_title.get_rect(center=(200, 350))
         screen.blit(game_title, game_title_react)
         game.road_x_pos -= 1
@@ -127,7 +127,7 @@ def show_register():
         screen.blit(btn_back, (10, 10))
         mx, my = pygame.mouse.get_pos()
         if btn_back_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_back_hover.png'), (10, 10))
+            screen.blit(pygame.image.load('res/btn_back_hover.png'), (10, 10))
             if click:
                 is_running = False
         click = False
@@ -195,7 +195,7 @@ def show_register():
 
         pygame.draw.rect(screen, color_username, username_input_rect, 3)
 
-        game_title = pygame.font.Font('../../../04B_19.TTF', 60).render("Flappython", True, (255, 255, 255))
+        game_title = pygame.font.Font('04B_19.TTF', 60).render("Flappython", True, (255, 255, 255))
         game_title_react = game_title.get_rect(center=(225, 120))
         screen.blit(game_title, game_title_react)
 
@@ -231,7 +231,7 @@ def show_register():
         screen.blit(reg_btn, (115, 580))
 
         if btn_reg_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_register_hover.png'), (115, 580))
+            screen.blit(pygame.image.load('res/btn_register_hover.png'), (115, 580))
             if btn_click:
                 handle_register(reg_account)
                 is_running = False
@@ -311,7 +311,7 @@ def show_login_box():
 
         pygame.draw.rect(screen, color_username, username_input_rect, 3)
 
-        game_title = pygame.font.Font('../../../04B_19.TTF', 60).render("Flappython", True, (255, 255, 255))
+        game_title = pygame.font.Font('04B_19.TTF', 60).render("Flappython", True, (255, 255, 255))
         game_title_react = game_title.get_rect(center=(225, 75))
         screen.blit(game_title, game_title_react)
 
@@ -347,11 +347,11 @@ def show_login_box():
             if btn_click:
                 menu.main_menu("GUEST")
         if btn_reg_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_register_hover.png'), (115, 420))
+            screen.blit(pygame.image.load('res/btn_register_hover.png'), (115, 420))
             if btn_click:
                 show_register()
         if btn_login_rect.collidepoint((mx, my)):
-            screen.blit(pygame.image.load('../../../res/btn_login_hover.png'), (115, 520))
+            screen.blit(pygame.image.load('res/btn_login_hover.png'), (115, 520))
             if btn_click:
                 handle_login(account)
         btn_click = False
@@ -389,10 +389,10 @@ dialog_bg = pygame.image.load(DIALOG_BG).convert_alpha()
 btn_ok = pygame.image.load(BTN_OK_LOCATION).convert_alpha()
 btn_ok_rect = pygame.Rect(220, 430, 110, 80)
 
-bg = pygame.image.load('../../../res/background-night-dimmed.png').convert()
-game_font = pygame.font.Font('../../../04B_19.TTF', 35)
+bg = pygame.image.load('res/background-night-dimmed.png').convert()
+game_font = pygame.font.Font('04B_19.TTF', 35)
 pygame.display.set_icon(
-    pygame.transform.scale2x(pygame.image.load('../../../res/yellowbird-midflap.png').convert_alpha()))
+    pygame.transform.scale2x(pygame.image.load('res/yellowbird-midflap.png').convert_alpha()))
 pygame.display.set_caption("Flappython")
 
 click = True
