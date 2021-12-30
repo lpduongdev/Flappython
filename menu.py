@@ -5,10 +5,10 @@ from pygame.locals import *
 
 import db
 
-BTN_EASY_IMG_LOCATION = '../../../res/btn_easy.png'
-BTN_MED_IMG_LOCATION = '../../../res/btn_medium.png'
-BTN_HARD_IMG_LOCATION = '../../../res/btn_hard.png'
-BTN_OPTIONS_IMG_LOCATION = '../../../res/btn_options.png'
+BTN_EASY_IMG_LOCATION = 'res/btn_easy.png'
+BTN_MED_IMG_LOCATION = 'res/btn_medium.png'
+BTN_HARD_IMG_LOCATION = 'res/btn_hard.png'
+BTN_OPTIONS_IMG_LOCATION = 'res/btn_options.png'
 GAME_MODE_EASY = 'easy_score'
 GAME_MODE_MEDIUM = 'medium_score'
 GAME_MODE_HARD = 'hard_score'

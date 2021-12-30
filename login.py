@@ -55,8 +55,8 @@ class Account:
 
 
 pygame.init()
-BTN_REG_IMG_LOCATION = '../../../res/btn_register.png'
-BTN_LOGIN_IMG_LOCATION = '../../../res/btn_login.png'
+BTN_REG_IMG_LOCATION = 'res/btn_register.png'
+BTN_LOGIN_IMG_LOCATION = 'res/btn_login.png'
 
 
 def generate_password_display(number):
@@ -359,8 +359,8 @@ def show_login_box():
         clock.tick(120)
 
 
-DIALOG_BG = '../../../res/dialog_bg.png'
-BTN_OK_LOCATION = '../../../res/btn_ok.png'
+DIALOG_BG = 'res/dialog_bg.png'
+BTN_OK_LOCATION = 'res/btn_ok.png'
 
 color_active = pygame.Color('lightskyblue3')
 color_passive = pygame.Color('black')
