@@ -8,8 +8,8 @@ import menu
 
 
 class Account:
-    def __init__(self, username, plain_password, plain_password_confirm=None):
-        self.__username = username
+    def __init__(self, username_text, plain_password, plain_password_confirm=None):
+        self.__username = username_text
         self.__plain_password = plain_password
         self.__plain_password_confirm = ''
         if plain_password_confirm is not None:
@@ -18,10 +18,10 @@ class Account:
     def get_username(self):
         return self.__username
 
-    def _set_username(self, username):
-        self.__username = username
+    def _set_username(self, username_text):
+        self.__username = username_text
 
-    def _get_plain_password(self):
+    def _get_password_length(self):
         return len(self.__plain_password)
 
     def _set_plain_password(self, is_delete, character=None):
@@ -31,7 +31,7 @@ class Account:
         self.__plain_password += character
         return
 
-    def _get_plain_password_confirm(self):
+    def _get_password_confirm_length(self):
         return len(self.__plain_password_confirm)
 
     def _set_plain_password_confirm(self, is_delete, character=None):
@@ -59,16 +59,16 @@ BTN_REG_IMG_LOCATION = '../../../res/btn_register.png'
 BTN_LOGIN_IMG_LOCATION = '../../../res/btn_login.png'
 
 
-def __hide_password_text(number):
+def generate_password_display(number):
     string = ''
     for x in range(0, number):
         string += '*'
     return str(string)
 
 
-def __is_valid_input(acc, plain_password, plain_password_confirm=None):
+def is_valid(acc, plain_password, plain_password_confirm=None):
     if len(acc) <= 3:
-        show_dialog("username too short")
+        show_dialog("username_text too short")
         return False
     if len(plain_password) <= 3:
         show_dialog("password too short")
@@ -138,12 +138,13 @@ def show_register():
                 if password_active:
                     if event.key == pygame.K_BACKSPACE:
                         reg_account._set_plain_password(True)
-                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and (reg_account._get_plain_password()) < 10:
+                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and (reg_account._get_password_length()) < 10:
                         reg_account._set_plain_password(False, event.unicode)
                 if password_confirm_active:
                     if event.key == pygame.K_BACKSPACE:
                         reg_account._set_plain_password_confirm(True)
-                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and reg_account._get_plain_password_confirm() < 10:
+                    if (
+                            97 <= event.key <= 122 or 48 <= event.key <= 57) and reg_account._get_password_confirm_length() < 10:
                         # password_confirm += event.unicode
                         reg_account._set_plain_password_confirm(False, event.unicode)
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -209,11 +210,13 @@ def show_register():
         username_surface = game_font.render(reg_account.get_username(), True, (255, 255, 255))
         screen.blit(username_surface, (80, 240))
 
-        password_surface = game_font.render(__hide_password_text(reg_account._get_plain_password()), True, (255, 255, 255))
+        password_surface = game_font.render(generate_password_display(reg_account._get_password_length()), True,
+                                            (255, 255, 255))
         screen.blit(password_surface, (80, 360))
 
-        password_confirm_surface = game_font.render(__hide_password_text(reg_account._get_plain_password_confirm()), True,
-                                                    (255, 255, 255))
+        password_confirm_surface = game_font.render(
+            generate_password_display(reg_account._get_password_confirm_length()), True,
+            (255, 255, 255))
         screen.blit(password_confirm_surface, (80, 490))
 
         btn_reg_rect = pygame.Rect(115, 580, 200, 80)
@@ -222,33 +225,33 @@ def show_register():
         if btn_reg_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_register_hover.png'), (115, 580))
             if btn_click:
-                __handle_register(reg_account)
+                handle_register(reg_account)
                 is_running = False
         btn_click = False
         pygame.display.update()
         clock.tick(120)
 
 
-def __handle_register(account):
+def handle_register(account):
     global username, password, password_confirm
     acc = account.get_username()
     passwd = account._get_hashed_password()
     passwd_confirm = account._get_hashed_password_confirm()
-    if __is_valid_input(acc, passwd, passwd_confirm):
+    if is_valid(acc, passwd, passwd_confirm):
         if db.signup(acc, passwd):
             show_dialog("Create completed")
         else:
-            show_dialog("This username already used!")
+            show_dialog("This username_text already used!")
 
 
-def __handle_login(account):
+def handle_login(account):
     hashed_password = account._get_hashed_password()
-    if __is_valid_input(account.get_username(), hashed_password):
+    if is_valid(account.get_username(), hashed_password):
         if db.login(account.get_username(), hashed_password):
             show_dialog("Login successful!")
             menu.main_menu(account.get_username())
         else:
-            show_dialog("wrong username/password")
+            show_dialog("wrong username_text/password")
 
 
 def show_login_box():
@@ -274,7 +277,7 @@ def show_login_box():
                 if password_active:
                     if event.key == pygame.K_BACKSPACE:
                         account._set_plain_password(True)
-                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and account._get_plain_password() < 10:
+                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and account._get_password_length() < 10:
                         account._set_plain_password(False, event.unicode)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -316,7 +319,8 @@ def show_login_box():
         username_surface = game_font.render(account.get_username(), True, (255, 255, 255))
         screen.blit(username_surface, (80, 240))
 
-        password_surface = game_font.render(__hide_password_text(account._get_plain_password()), True, (255, 255, 255))
+        password_surface = game_font.render(generate_password_display(account._get_password_length()), True,
+                                            (255, 255, 255))
         screen.blit(password_surface, (80, 360))
 
         btn_reg_rect = pygame.Rect(115, 420, 200, 80)
@@ -331,7 +335,7 @@ def show_login_box():
         if btn_login_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('../../../res/btn_login_hover.png'), (115, 520))
             if btn_click:
-                __handle_login(account)
+                handle_login(account)
         btn_click = False
 
         pygame.display.update()
@@ -370,7 +374,8 @@ btn_ok_rect = pygame.Rect(220, 430, 110, 80)
 
 bg = pygame.image.load('../../../res/background-night-dimmed.png').convert()
 game_font = pygame.font.Font('../../../04B_19.TTF', 35)
-pygame.display.set_icon(pygame.transform.scale2x(pygame.image.load('../../../res/yellowbird-midflap.png').convert_alpha()))
+pygame.display.set_icon(
+    pygame.transform.scale2x(pygame.image.load('../../../res/yellowbird-midflap.png').convert_alpha()))
 pygame.display.set_caption("Flappython")
 
 click = True
