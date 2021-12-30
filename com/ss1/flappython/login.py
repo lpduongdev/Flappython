@@ -392,3 +392,5 @@ pygame.display.set_caption("Flappython")
 click = True
 btn_click = True
 clock = pygame.time.Clock()
+
+
