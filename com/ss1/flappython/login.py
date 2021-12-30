@@ -68,7 +68,7 @@ def generate_password_display(number):
 
 def is_valid(acc, plain_password, plain_password_confirm=None):
     if len(acc) <= 3:
-        show_dialog("username_text too short")
+        show_dialog("username too short")
         return False
     if len(plain_password) <= 3:
         show_dialog("password too short")
@@ -241,7 +241,7 @@ def handle_register(account):
         if db.signup(acc, passwd):
             show_dialog("Create completed")
         else:
-            show_dialog("This username_text already used!")
+            show_dialog("This username already used!")
 
 
 def handle_login(account):
@@ -251,7 +251,7 @@ def handle_login(account):
             show_dialog("Login successful!")
             menu.main_menu(account.get_username())
         else:
-            show_dialog("wrong username_text/password")
+            show_dialog("wrong username/password")
 
 
 def show_login_box():
