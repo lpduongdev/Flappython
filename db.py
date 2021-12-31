@@ -1,15 +1,17 @@
 import pymongo
 
-username ='max'
+username = 'max'
 password = 'iloveyou>'
 database_name = 'myFirstDatabase'
-url = 'mongodb+srv://'+username+':'+password+'@cluster0.pntcp.mongodb.net/'+database_name+'?retryWrites=true&w=majority'
+url = 'mongodb+srv://' + username + ':' + password + '@cluster0.pntcp.mongodb.net/' + database_name + '?retryWrites=true&w=majority'
 db = pymongo.MongoClient(url).get_database("flappy_thon")
 score_collection = {}
 
 
 def login(username, password):
     username = username.lower()
+    if username == 'guest':
+        return False
     if username and password:
         user = db['users'].find_one({'username_text': username})
         if not user:
@@ -24,6 +26,8 @@ def login(username, password):
 
 def signup(username, password):
     username = username.lower()
+    if username == 'guest':
+        return False
     if db['users'].find_one({'username_text': username}):
         return False
     user_info = {"username_text": username,

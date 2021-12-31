@@ -267,7 +267,7 @@ def start_game(username, level):
             screen.blit(bg_dim, (0,0))
             screen.blit(stop_screen_surface, stop_screen_react)
         else:
-            if username != "GUEST":
+            if username != "guest":
                 db.save_result(score, username, level)
                 if stop_screen(level, score):
                     pipe_list.clear()
@@ -382,14 +382,14 @@ flap_sound = pygame.mixer.Sound(SFX_SWING_LOCATION)
 hit_sound = pygame.mixer.Sound(SFX_HIT_LOCATION)
 score_sound = pygame.mixer.Sound(SFX_PASS_LOCATION)
 
-your_score_text = game_font.render("Your point: " + str(score), True, (255, 255, 255))
+your_score_text = game_font.render("Your score: " + str(score), True, (255, 255, 255))
 your_score_rect = your_score_text.get_rect(center=(216, 600))
 
-easy_score_text = game_font.render("Top point easy: ", True, (255, 255, 255))
+easy_score_text = game_font.render("Top score easy: ", True, (255, 255, 255))
 easy_score_rect = easy_score_text.get_rect(center=(170, 250))
-medium_score_text = game_font.render("Top point medium: ", True, (255, 255, 255))
+medium_score_text = game_font.render("Top score medium: ", True, (255, 255, 255))
 medium_score_rect = medium_score_text.get_rect(center=(200, 250))
-hard_score_text = game_font.render("Top point hard: ", True, (255, 255, 255))
+hard_score_text = game_font.render("Top score hard: ", True, (255, 255, 255))
 hard_score_rect = hard_score_text.get_rect(center=(170, 250))
 
 top_list_font = pygame.font.Font('04B_19.TTF', 26)

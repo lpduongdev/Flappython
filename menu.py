@@ -116,7 +116,7 @@ def options(username):
     global click, btn_music_mute, btn_sfx_mute, is_music_on, is_sfx_on
     is_running = True
     user_info = None
-    if username != "GUEST":
+    if username != "guest":
         user_info = db.get_score(username)
     while is_running:
         mx, my = pygame.mouse.get_pos()
@@ -130,14 +130,14 @@ def options(username):
 
         title_text = pygame.font.Font('04B_19.TTF', 24).render("You are login as: " + str(username), True,
                                                                (255, 255, 255))
-        if username != 'GUEST':
+        if username != 'guest':
             show_user_info(user_info)
         title_rect = title_text.get_rect(center=(200, 200))
         screen.blit(title_text, title_rect)
 
         screen.blit(btn_back, (10, 10))
-        screen.blit(btn_music_mute, (100, 500))
-        screen.blit(btn_sfx_mute, (230, 500))
+        screen.blit(btn_music_mute, (80, 450))
+        screen.blit(btn_sfx_mute, (250, 450))
         screen.blit(btn_logout, (115, 650))
 
         if btn_back_rect.collidepoint((mx, my)):
@@ -150,19 +150,19 @@ def options(username):
                 return 0
         if btn_mute_rect.collidepoint((mx, my)):
             if is_music_on:
-                screen.blit(pygame.image.load('res/btn_mute_hover.png'), (100, 500))
+                screen.blit(pygame.image.load('res/btn_mute_hover.png'), (80, 450))
             if click:
                 if is_music_on:
-                    bg_music.stop()
+                    bg_music.set_volume(0)
                     btn_music_mute = btn_mute_off
                     is_music_on = False
                 else:
-                    bg_music.play()
+                    bg_music.set_volume(100)
                     btn_music_mute = btn_mute
                     is_music_on = True
         if btn_sfx_rect.collidepoint((mx, my)):
             if is_sfx_on:
-                screen.blit(pygame.image.load('res/btn_sfx_hover.png'), (230, 500))
+                screen.blit(pygame.image.load('res/btn_sfx_hover.png'), (250, 450))
             if click:
                 if is_sfx_on:
                     game.flap_sound.set_volume(0)
@@ -202,12 +202,12 @@ btn_back = pygame.image.load(game.BTN_BACK_LOCATION).convert_alpha()
 btn_back_rect = pygame.Rect(10, 10, 110, 80)
 
 btn_mute = pygame.image.load('res/btn_mute_on.png').convert_alpha()
-btn_mute_rect = pygame.Rect(100, 500, 109, 100)
+btn_mute_rect = pygame.Rect(80, 450, 109, 100)
 btn_mute_off = pygame.image.load('res/btn_mute_off.png').convert_alpha()
 btn_music_mute = btn_mute
 
 btn_sfx = pygame.image.load('res/btn_sfx_on.png').convert_alpha()
-btn_sfx_rect = pygame.Rect(230, 500, 109, 100)
+btn_sfx_rect = pygame.Rect(250, 450, 109, 100)
 btn_sfx_off = pygame.image.load('res/btn_sfx_off.png').convert_alpha()
 btn_sfx_mute = btn_sfx
 

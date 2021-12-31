@@ -109,10 +109,7 @@ def show_dialog(context):
         game_title = pygame.font.Font('04B_19.TTF', 24).render(context, True, (36, 36, 36))
         game_title_react = game_title.get_rect(center=(200, 350))
         screen.blit(game_title, game_title_react)
-        game.road_x_pos -= 1
-        game.generate_road()
-        if game.road_x_pos <= -432:
-            game.road_x_pos = 0
+        game.animate_road()
         pygame.display.update()
         clock.tick(120)
 
@@ -153,7 +150,6 @@ def show_register():
                         reg_account._set_plain_password_confirm(True)
                     if (
                             97 <= event.key <= 122 or 48 <= event.key <= 57) and reg_account._get_password_confirm_length() < 10:
-                        # password_confirm += event.unicode
                         reg_account._set_plain_password_confirm(False, event.unicode)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if btn_back_rect.collidepoint((mx, my)):
@@ -241,7 +237,6 @@ def show_register():
 
 
 def handle_register(account):
-    global username, password, password_confirm
     acc = account.get_username()
     passwd = account._get_hashed_password()
     passwd_confirm = account._get_hashed_password_confirm()
@@ -345,7 +340,7 @@ def show_login_box():
             guest_title = game_font.render("Play as Guest", True, (255, 0, 0))
             screen.blit(guest_title, guest_title_rect)
             if btn_click:
-                menu.main_menu("GUEST")
+                menu.main_menu("guest")
         if btn_reg_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('res/btn_register_hover.png'), (115, 420))
             if btn_click:
