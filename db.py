@@ -1,7 +1,9 @@
 import pymongo
 
-
-url = 'mongodb+srv://max:iloveyou>@cluster0.pntcp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+username ='max'
+password = 'iloveyou>'
+database_name = 'myFirstDatabase'
+url = 'mongodb+srv://'+username+':'+password+'@cluster0.pntcp.mongodb.net/'+database_name+'?retryWrites=true&w=majority'
 db = pymongo.MongoClient(url).get_database("flappy_thon")
 score_collection = {}
 
