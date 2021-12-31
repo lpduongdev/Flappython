@@ -1,9 +1,10 @@
 import pymongo
 from datetime import datetime
+import os
 
-db = pymongo.MongoClient()["flappy-thon"]
+url = 'mongodb+srv://max:iloveyou>@cluster0.pntcp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+db = pymongo.MongoClient(url).get_database("flappy_thon")
 score_collection = {}
-
 
 def login(username, password):
     username = username.lower()
