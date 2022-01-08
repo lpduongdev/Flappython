@@ -106,7 +106,7 @@ def show_dialog(context):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     is_running = False
-        game_title = pygame.font.Font('04B_19.TTF', 24).render(context, True, (36, 36, 36))
+        game_title = pygame.font.Font(None, 24).render(context, True, (36, 36, 36))
         game_title_react = game_title.get_rect(center=(200, 350))
         screen.blit(game_title, game_title_react)
         game.animate_road()
@@ -312,7 +312,11 @@ def forgot_password():
             screen.blit(guest_title, guest_title_rect)
             if btn_click:
                 new_pass = db.reset_password(account.get_username())
+                if new_pass == -1:
+                    show_dialog("Not found your account")
+                    is_running = False
                 show_dialog("Your new password: " + str(new_pass))
+                is_running = False
         btn_click = False
         pygame.display.update()
         clock.tick(120)
