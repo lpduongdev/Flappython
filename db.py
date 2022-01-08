@@ -1,3 +1,7 @@
+import hashlib
+import random
+import string
+
 import pymongo
 
 username = 'max'
@@ -54,6 +58,24 @@ def save_result(score, username, level):
     else:
         print("Invalid")
         return False
+
+
+def reset_password(username):
+    username = username.lower()
+    new_pass = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    new_pass += "$."
+    hashed_password = hashlib.sha256(new_pass.encode('utf-8')).hexdigest()
+    hashed_password = hashed_password[0:7] + '1ae5' + hashed_password[7:12] + '3ee1' + hashed_password[10:] + 'aHV5'
+    if username:
+        db['users'].find_one({'username_text': username})
+        db['users'].update_one({'username_text': username}, {
+            '$set': {
+                'password': hashed_password
+            }
+        })
+        return new_pass
+    else:
+        return -1
 
 
 def get_top_five_easy():

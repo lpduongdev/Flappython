@@ -257,6 +257,67 @@ def handle_login(account):
             show_dialog("wrong username/password")
 
 
+def forgot_password():
+    global color_username, color_password, username_active, password_active, click, btn_click
+    is_running = True
+    account = Account('', '')
+    while is_running:
+        screen.blit(bg, (0, 0))
+        game.animate_road()
+        mx, my = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    is_running = False
+                if username_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        account._set_username(account.get_username()[:-1])
+                    if (97 <= event.key <= 122 or 48 <= event.key <= 57) and len(account.get_username()) < 15:
+                        account._set_username(account.get_username() + event.unicode)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+                    btn_click = True
+        if username_input_rect.collidepoint((mx, my)):
+            if click:
+                username_active = True
+        click = False
+        if username_active:
+            color_username = color_active
+
+        pygame.draw.rect(screen, color_username, username_input_rect, 3)
+
+        game_title = pygame.font.Font('04B_19.TTF', 60).render("Forgot", True, (255, 255, 255))
+        game_title_react = game_title.get_rect(center=(225, 75))
+        screen.blit(game_title, game_title_react)
+
+        username_title = game_font.render("Account:", True, (255, 255, 255))
+        username_title_rect = username_title.get_rect(center=(100, 200))
+        screen.blit(username_title, username_title_rect)
+
+
+        username_surface = game_font.render(account.get_username(), True, (255, 255, 255))
+        screen.blit(username_surface, (80, 240))
+
+        guest_title = game_font.render("Get password", True, (255, 255, 255))
+        guest_rect = pygame.Rect(100, 630, 240, 40)
+        guest_title_rect = guest_title.get_rect(center=(220, 650))
+        screen.blit(guest_title, guest_title_rect)
+
+        if guest_rect.collidepoint((mx, my)):
+            guest_title = game_font.render("Get password", True, (255, 0, 0))
+            screen.blit(guest_title, guest_title_rect)
+            if btn_click:
+                new_pass = db.reset_password(account.get_username())
+                show_dialog("Your new password: " + str(new_pass))
+        btn_click = False
+        pygame.display.update()
+        clock.tick(120)
+
+
 def show_login_box():
     global color_username, color_password, username_active, password_active, click, btn_click
     is_running = True
@@ -336,11 +397,22 @@ def show_login_box():
         guest_rect = pygame.Rect(100, 630, 240, 40)
         guest_title_rect = guest_title.get_rect(center=(220, 650))
         screen.blit(guest_title, guest_title_rect)
+
+        forgot_pass = game_font.render("Forgot password", True, (255, 255, 255))
+        forgot_pass_rect = pygame.Rect(100, 680, 240, 40)
+        forgot_pass_title_rect = forgot_pass.get_rect(center=(220, 700))
+        screen.blit(forgot_pass, forgot_pass_title_rect)
+
         if guest_rect.collidepoint((mx, my)):
             guest_title = game_font.render("Play as Guest", True, (255, 0, 0))
             screen.blit(guest_title, guest_title_rect)
             if btn_click:
                 menu.main_menu("guest")
+        if forgot_pass_rect.collidepoint((mx, my)):
+            forgot_pass = game_font.render("Forgot password", True, (255, 0, 0))
+            screen.blit(forgot_pass, forgot_pass_title_rect)
+            if btn_click:
+                forgot_password()
         if btn_reg_rect.collidepoint((mx, my)):
             screen.blit(pygame.image.load('res/btn_register_hover.png'), (115, 420))
             if btn_click:
